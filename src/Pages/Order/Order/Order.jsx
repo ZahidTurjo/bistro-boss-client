@@ -29,7 +29,7 @@ const Order = () => {
                 <title>Bistro | Order</title>
             </Helmet>
             <Cover img={orderImg} title='would u like to the dish' coverTitle='OUR SHOP'></Cover>
-            <Tabs  defaultIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
+            <Tabs  defaultIndex={tabIndex} onSelect={(initialIndex) => setTabIndex(initialIndex)}>
                <div className="flex mt-6 justify-center">
                <TabList>
                     <Tab>salad</Tab>
