@@ -1,13 +1,17 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
 import { AuthContext } from '../../providers/AuthProvider';
 import { Helmet } from 'react-helmet-async';
+import Swal from 'sweetalert2';
+import SocialLogin from '../../components/SocialLogin/SocialLogin';
 
 
 const Login = () => {
-    const captchaRef=useRef(null)
-    const[disabled,setDisabled]=useState(true)
+    const navigate=useNavigate()
+    const location=useLocation()
+    const from= location.state?.from?.pathname || '/'
+  
     const {login}=useContext(AuthContext)
 useEffect(()=>{
     loadCaptchaEnginge(3); 
@@ -19,31 +23,48 @@ useEffect(()=>{
         const form=e.target;
         const email=form.email.value;
         const password= form.password.value;
-        
+        const captcha= form.captcha.value;
         console.log(email,password);
-        login(email,password)
+        if (validateCaptcha(captcha)==true) {
+            alert('Captcha Matched');
+            login(email,password)
         .then(result=>{
-            console.log(result.user);
+            // console.log(result.user);
+            Swal.fire({
+                title: "succesfully logged in",
+                showClass: {
+                  popup: `
+                    animate__animated
+                    animate__fadeInUp
+                    animate__faster
+                  `
+                },
+                hideClass: {
+                  popup: `
+                    animate__animated
+                    animate__fadeOutDown
+                    animate__faster
+                  `
+                }
+              });
+              navigate(from,{replace:true})
         })
+       
         .catch(error=>{
             console.log(error.message);
         })
+            
+        }
+   
+        else {
+            alert('Captcha Does Not Match');
+        }
+        
        
     
         
     }
-    const captchaValidate=()=>{
-        const captcha =captchaRef.current.value;
-        console.log(captcha);
-        if (validateCaptcha(captcha)==true) {
-           alert('Captcha Matched');
-            setDisabled(false)
-        }
-   
-        else {
-           alert('Captcha Does Not Match');
-        }
-    }
+    
     return (
         <div>
             <Helmet>
@@ -77,20 +98,25 @@ useEffect(()=>{
           <LoadCanvasTemplate />
           </label>
         
-          <input type="text" ref={captchaRef} name="captcha" placeholder="captcha" className="input input-bordered" required />
-          <button onClick={captchaValidate}>validate</button>
+          <input type="text" name="captcha" placeholder="captcha" className="input input-bordered" required />
+          
         </div>
         <div className="form-control mt-6">
        
-          <input disabled={disabled} className="btn btn-primary" type="submit" value="Login" />
+          <input className="btn btn-primary" type="submit" value="Login" />
         
         </div>
       </form>
-
+      <SocialLogin></SocialLogin>
+      <div className='divider'></div>
+      
       <p className='text-center my-7'>new Here? go to <span className='text-blue-500'><Link to="/signup">SignUp</Link></span></p>
+    
     </div>
   </div>
+  
   </div>
+
 </div>
     );
 };
