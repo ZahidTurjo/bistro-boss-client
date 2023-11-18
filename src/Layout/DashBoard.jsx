@@ -1,8 +1,9 @@
 import { TiBookmark, TiCalendar, TiContacts, TiDocumentAdd, TiHome, TiShoppingBag, TiShoppingCart, TiStar, TiThList, TiThMenu, TiUser } from "react-icons/ti";
 import { NavLink, Outlet } from "react-router-dom";
+import useAdmin from "../hooks/useAdmin";
 
 const DashBoard = () => {
-    const isAdmin = true;
+    const [isAdmin] = useAdmin();
     return (
         <div className="max-w-7xl mx-auto" >
 
